@@ -12,6 +12,10 @@ on:
         description: '공식 자료 수집 실행'
         type: boolean
         default: true
+      probe:
+        description: '진단 요청(JSON 배열). 값이 있으면 수집 대신 진단만 실행'
+        type: string
+        default: ''
       debug:
         description: '응답 구조 진단 파일 저장'
         type: boolean
@@ -43,7 +47,9 @@ jobs:
         env:
           LAW_API_OC: ${{ secrets.LAW_API_OC }}
           COLLECT_DEBUG: ${{ inputs.debug && '1' || '0' }}
-        run: node collector/collect.mjs
+          PROBE: ${{ inputs.probe }}
+        run: |
+          if [ -n "$PROBE" ]; then node collector/probe.mjs; else node collector/collect.mjs; fi
       - name: 변경 자료 저장
         if: always()
         run: |
