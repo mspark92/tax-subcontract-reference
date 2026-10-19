@@ -50,6 +50,8 @@ async function api(endpoint,params){
   }catch(e){last=e;await sleep(800*(attempt+1));}
  }
  failures++;
+ // 처음부터 계속 실패하면(인증·접속 차단) 오래 재시도하지 않고 바로 중단합니다.
+ if(!successes&&failures>=4){const e=Error('국가법령정보센터 접속 실패: '+String(last?.message||last)+(last?.cause?' / '+String(last.cause.code||last.cause.message||last.cause):''));e.fatal=true;throw e;}
  throw last;
 }
 async function pool(items,n,fn){const out=[];let i=0;await Promise.all(Array.from({length:Math.min(n,items.length)},async()=>{while(i<items.length){const k=i++;out[k]=await fn(items[k],k);}}));return out;}
@@ -158,7 +160,7 @@ async function collectLaws(domain,cfg,state,results,pending){
    if(old?.hasBody){updated++;if(old.sourceHash!==rec.sourceHash||old.lawVersion!==mst)pending.push({type:'law',domain,id,title:e.title,lawLevel:e.lawLevel,detectedAt:NOW,before:{version:old.lawVersion,effectiveDate:old.effectiveDate,promulgationDate:old.promulgationDate},after:{version:mst,effectiveDate:rec.effectiveDate,promulgationDate:rec.promulgationDate,revisionType:rec.revisionType,promulgationNo:rec.promulgationNo},diff:diffSections(oldBody,{content:body.content,sections:body.sections}),reasonExcerpt:body.reason.slice(0,4000)});}
    else added++;
    next.push(rec);
-  }catch(err){errors.push(e.title+': '+(err.message||err));next.push({...base,...(old||{}),...pickMeta(base),lastError:String(err.message||err).slice(0,200)});}
+  }catch(err){if(err.fatal)throw err;errors.push(e.title+': '+(err.message||err));next.push({...base,...(old||{}),...pickMeta(base),lastError:String(err.message||err).slice(0,200)});}
  });
  next.sort((a,b)=>a.lawOrder-b.lawOrder);
  state.laws=[...next,...state.laws.filter(r=>r.lawTarget==='admrul')];
@@ -200,7 +202,7 @@ async function collectRules(domain,cfg,state,results,pending){
     if(old?.hasBody){updated++;pending.push({type:'rule',domain,id,title:name,lawLevel:rec.lawLevel,detectedAt:NOW,before:{version:old.lawVersion,effectiveDate:old.effectiveDate},after:{version:seq,effectiveDate:rec.effectiveDate,promulgationDate:rec.promulgationDate},diff:diffSections(oldBody,{content,sections})});}else added++;
     found.set(id,rec);
    }
-  }catch(err){errors.push(rule.query+': '+(err.message||err));}
+  }catch(err){if(err.fatal)throw err;errors.push(rule.query+': '+(err.message||err));}
  });
  // 이번에 찾지 못한 기존 규칙은 보존합니다(일시적 오류로 사라지지 않도록).
  for(const [id,r] of prev)if(!found.has(id))found.set(id,r);
@@ -221,14 +223,14 @@ async function collectSources(domain,cfg,state,results,pending){
      const s=await api('lawSearch.do',params);const {items}=listItems(s);
      for(const it of items){const raw=itemId(it);if(raw)rows.set(raw,it);}
      if(items.length<Math.min(100,per))break;
-    }catch(err){errors.push((q||'전체')+': '+(err.message||err));break;}
+    }catch(err){if(err.fatal)throw err;errors.push((q||'전체')+': '+(err.message||err));break;}
    }
   }
   const fresh=[...rows.entries()].filter(([raw])=>!have.has(`${domain}-${src.id}-${raw}`)).slice(0,src.limit);
   let added=0;const detailErrors=[];
   await pool(fresh,4,async([raw,row])=>{
    try{const d=await api('lawService.do',{target:src.target,ID:raw});const rec=recordFromDetail(domain,src,`${domain}-${src.id}-${raw}`,row,d);if(rec.content||rec.answer){have.set(rec.id,rec);added++;}else detailErrors.push(raw+': 본문 없음');}
-   catch(err){detailErrors.push(raw+': '+(err.message||err));}
+   catch(err){if(err.fatal)throw err;detailErrors.push(raw+': '+(err.message||err));}
   });
   if(added&&have.size)pending.push({type:'source',domain,source:src.name,kind:src.kind,added,detectedAt:NOW,ids:[...have.values()].filter(r=>r.source===src.id&&r.collectedAt===NOW).map(r=>r.id).slice(0,30)});
   const status=!rows.size&&errors.length?'error':'success';
@@ -242,14 +244,18 @@ async function main(){
  const runs=readJson(path.join(DATA,'runs.json'),[]);
  const pending=readJson(path.join(DATA,'pending.json'),[]);
  const newPending=[];
+ let fatal=null;
  for(const [domain,cfg] of Object.entries(DOMAINS)){
+  if(fatal)break;
   if(DOMAIN_FILTER&&DOMAIN_FILTER!==domain)continue;
   const files=domainFiles(domain);
   const state={laws:readJson(files.laws,[]),catalog:readJson(files.catalog,[])};
   const results=[];const startedAt=new Date().toISOString();
-  if(!ONLY||ONLY==='laws')await collectLaws(domain,cfg,state,results,newPending);
-  if(!ONLY||ONLY==='rules')await collectRules(domain,cfg,state,results,newPending);
-  if(!ONLY||ONLY==='sources')await collectSources(domain,cfg,state,results,newPending);
+  try{
+   if(!ONLY||ONLY==='laws')await collectLaws(domain,cfg,state,results,newPending);
+   if(!ONLY||ONLY==='rules')await collectRules(domain,cfg,state,results,newPending);
+   if(!ONLY||ONLY==='sources')await collectSources(domain,cfg,state,results,newPending);
+  }catch(e){if(!e.fatal)throw e;fatal=e;results.push({source:cfg.label+' 국가법령정보센터',status:'error',error:e.message});}
   writeJson(files.laws,state.laws);
   for(const extra of ['guides.json','updates.json'])if(!fs.existsSync(path.join(files.dir,extra)))writeJson(path.join(files.dir,extra),[]);
   writeJson(files.catalog,state.catalog);
@@ -267,3 +273,4 @@ async function main(){
  if(failures&&!successes)process.exitCode=3;
 }
 main().catch(e=>{console.error(e);process.exit(1);});
+process.on('unhandledRejection',e=>{console.error(e);process.exit(1);});
