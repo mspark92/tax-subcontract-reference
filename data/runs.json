@@ -1,1 +1,133 @@
-[]
+[
+ {
+  "id": "762fc054-88d8-43d2-b939-a4e3d17581cc",
+  "domain": "subcon",
+  "startedAt": "2026-10-19T13:26:58.546Z",
+  "completedAt": "2026-10-19T13:28:30.926Z",
+  "status": "partial",
+  "results": [
+   {
+    "source": "하도급법 법령(국가법령정보센터)",
+    "status": "success",
+    "checked": 13,
+    "added": 13,
+    "updated": 0,
+    "note": "현행 법령 버전 확인"
+   },
+   {
+    "source": "하도급법 고시·지침·통칙(행정규칙)",
+    "status": "success",
+    "checked": 21,
+    "added": 21,
+    "updated": 0,
+    "note": "미확인 2건: 수급사업자: 검색 결과 없음 / 기술자료: 검색 결과 없음"
+   },
+   {
+    "source": "하도급법 법제처 법령해석",
+    "status": "success",
+    "checked": 70,
+    "added": 70,
+    "updated": 0,
+    "note": "최신순 70건 확인"
+   },
+   {
+    "source": "하도급법 공정거래위원회 법령해석",
+    "status": "error",
+    "checked": 0,
+    "added": 0,
+    "updated": 0,
+    "note": "최신순 0건 확인",
+    "error": "하도급: Unexpected end of JSON input"
+   },
+   {
+    "source": "하도급법 국토교통부 법령해석",
+    "status": "success",
+    "checked": 38,
+    "added": 38,
+    "updated": 0,
+    "note": "최신순 38건 확인"
+   },
+   {
+    "source": "하도급법 공정거래위원회 의결",
+    "status": "success",
+    "checked": 300,
+    "added": 300,
+    "updated": 0,
+    "note": "최신순 300건 확인"
+   },
+   {
+    "source": "하도급법 하도급 판례",
+    "status": "success",
+    "checked": 32,
+    "added": 11,
+    "updated": 0,
+    "note": "최신순 32건 확인"
+   }
+  ]
+ },
+ {
+  "id": "1d34ae55-082b-425b-ab45-24916bffa410",
+  "domain": "tax",
+  "startedAt": "2026-10-19T13:01:51.191Z",
+  "completedAt": "2026-10-19T13:26:58.546Z",
+  "status": "success",
+  "results": [
+   {
+    "source": "세법 법령(국가법령정보센터)",
+    "status": "success",
+    "checked": 56,
+    "added": 0,
+    "updated": 0,
+    "note": "현행 법령 버전 확인"
+   },
+   {
+    "source": "세법 고시·지침·통칙(행정규칙)",
+    "status": "success",
+    "checked": 20,
+    "added": 20,
+    "updated": 0,
+    "note": "미확인 1건: 기본통칙: 검색 결과 없음"
+   },
+   {
+    "source": "세법 법제처 법령해석",
+    "status": "success",
+    "checked": 122,
+    "added": 122,
+    "updated": 0,
+    "note": "최신순 122건 확인"
+   },
+   {
+    "source": "세법 국세청 질의회신",
+    "status": "success",
+    "checked": 600,
+    "added": 600,
+    "updated": 0,
+    "note": "최신순 600건 확인 · 목록만 등록 600건 · 본문 API 미신청"
+   },
+   {
+    "source": "세법 기획재정부 법령해석",
+    "status": "success",
+    "checked": 300,
+    "added": 300,
+    "updated": 0,
+    "note": "최신순 300건 확인 · 목록만 등록 300건 · 본문 API 미신청"
+   },
+   {
+    "source": "세법 조세심판원 결정",
+    "status": "success",
+    "checked": 600,
+    "added": 600,
+    "updated": 0,
+    "note": "최신순 600건 확인"
+   },
+   {
+    "source": "세법 조세 판례",
+    "status": "success",
+    "checked": 391,
+    "added": 109,
+    "updated": 0,
+    "note": "최신순 391건 확인"
+   }
+  ]
+ }
+]
