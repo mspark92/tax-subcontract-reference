@@ -9,6 +9,21 @@
     "display": "1"
    }
   ],
+  "status": 200,
+  "type": "application/json;charset=UTF-8",
+  "length": 115,
+  "body": "{\n    \"result\" : \"사용자 정보 검증에 실패하였습니다.\",\n    \"msg\" : \"OPEN API 호출 시 사용자 검증을 위하여 정확한 서버장비의 IP주소 및 도메인주소를 등록해 주세요.\"\n}\n"
+ },
+ {
+  "req": [
+   "DRF",
+   "lawSearch.do",
+   {
+    "target": "law",
+    "query": "법인세법",
+    "display": "1"
+   }
+  ],
   "error": "TypeError: fetch failed",
   "cause": "ConnectTimeoutError: Connect Timeout Error (attempted address: www.law.go.kr:443, timeout: 10000ms)"
  },
@@ -22,8 +37,33 @@
     "display": "1"
    }
   ],
+  "status": 200,
+  "type": "application/json;charset=UTF-8",
+  "length": 115,
+  "body": "{\n    \"result\" : \"사용자 정보 검증에 실패하였습니다.\",\n    \"msg\" : \"OPEN API 호출 시 사용자 검증을 위하여 정확한 서버장비의 IP주소 및 도메인주소를 등록해 주세요.\"\n}\n"
+ },
+ {
+  "req": [
+   "DRF",
+   "lawService.do",
+   {
+    "target": "ntsCgmExpc",
+    "ID": "2953959"
+   }
+  ],
   "error": "TypeError: fetch failed",
   "cause": "ConnectTimeoutError: Connect Timeout Error (attempted address: www.law.go.kr:443, timeout: 10000ms)"
+ },
+ {
+  "req": [
+   "URL",
+   "https://www.law.go.kr/LSW/main.html",
+   null
+  ],
+  "status": 200,
+  "type": "text/html; charset=UTF-8",
+  "length": 112729,
+  "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"ko\" xml:lang=\"ko\">\n <head> \n  <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" /> \n  <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />    \n  <!-- 레이아웃 관련 CSS -->      \n  <!-- 레이아웃 관련 CSS //--> \n  <script type=\"text/javascript\" src=\"/LSW/js/jquery/jquery.min.js?Time=1792418701\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/common/common.js?Time=1792418701\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/common/drag_search.js?Time=1792418701\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/common/CookieUtil.js\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/jquery/jquery.loadmask.min.js?Time=1792418701\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/common/jquery-custom.js?Time=1792418701\"></script> \n  <!-- 레이아웃 관련 JS --> \n  <script type=\"text/javascript\" src=\"/LSW/js/jquery/jquery-ui.js?Time=1792418701\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/jquery/jquery-ui_2017.min.js?Time=1792418701\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/jquery/jquery.layout-latest.min.js?Time=1792418701\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/common/layout.js?Time=1792418701\"></script> \n  <!-- 레이아웃 관련 JS //-->  \n  <script type=\"text/javascript\">\r\n        var webRoot = '/LSW';\r\n    </script> \n  <link rel=\"shortcut icon\" type=\"text/css\" href=\"/LSW/images/ico_favorites.ico\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/css/lsw/common.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/js/jquery/jquery.loadmask.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/js/jquery/layout-default-latest.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/css/lsw/layout.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/css/lsw/board.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/css/ui_2017.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/css/fonts.css?Time=1792418701\" />\n  <link rel=\"shortcut icon\" type=\"text/css\" href=\"/LSW/images/ico_favorites.ico\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/js/jquery/jquery.fancybox-2.1.5.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/js/jquery/jquery.loadmask.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/js/jquery/layout-default-latest.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/css/ext/ext-all.min.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/css/common-ex.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/css/ui_2017.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/css/mobileView.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/css/main_2019.css?v=1.0?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/css/bootstrap.css?Time=1792418701\" />\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"/LSW/css/fonts.css?Time=1792418701\" />\n  <style type=\"text/css\">\r\n        .ui-layout-pane {\r\n            padding: 0;\r\n            background:\t#EEE;\r\n        }\r\n        .ui-layout-west {\r\n            background:\t#CFC;\r\n        }\r\n        .ui-layout-center {\r\n            background:\t#FFC;\r\n            padding:\t0; /* IMPORTANT - remove padding so pane can 'collapse' to 0-width */\r\n        }\r\n\r\n        .ui-layout-west > .ui-layout-center {\r\n            background:\t#CFC;\r\n        }\r\n\r\n        .ui-layout-west > .ui-layout-south {\r\n            background:\t#AFE;\r\n        }\r\n        .ui-layout-pane { border-width: 0; }\r\n        .ui-layout-north { border-bottom-width:\t1px; }\r\n        .ui-layout-south { border-top-width: 1px; }\r\n        .ui-layout-resizer-west {\r\n            border-width: 0;\r\n            border-left: 2px solid #b4b4b4;\r\n            background-color:white;\r\n        }\r\n        .ui-layout-toggler {\r\n            border: 0;\r\n            background-color:#fff\r\n        }\r\n        .ui-layout-toggler-west-closed {\r\n            background-image: url(\"./images/button/leslidev7_2.gif\");\r\n            background-color:white;\r\n            background-repeat: no-repeat;\r\n        }\r\n        .ui-layout-toggler-west-open {\r\n            background-image: url(\"./images/button/leslidev7_1.gif\");\r\n            background-color:white;\r\n            background-repeat: no-repeat;\r\n        }\r\n    </style> \n  <style type=\"text/css\">\r\n\t        .area_skip a:focus{top:0}\r\n\t\t\t.area_skip a{position:fixed;top:-100px;left:0;right:0;z-index:10000;background:#054689;padding:10px;color:#fff!important;font-size:16px;font-weight:bold;text-align:center}\r\n\t\t\t.video-player {width: 335px; height: auto; float: right;}\r\n\t</style>\n  <title>국가법령정보센터</title>\n </head> \n <body>    \n  <script type=\"text/javascript\">\r\n\t  var isAsGubun = \"IS\";\r\n\r\n\t  if(location.href.indexOf(\"law.go.kr\") > -1){\r\n\t\t  if(location.href.indexOf(\"https\") == -1){\r\n\t\t\t\t location.href = location.href.replace(\"http\",\"https\");\r\n\t\t  }\r\n\t  }\r\n\t  \r\n\t\t var adCnameList = new Array();\r\n\t\t\r\n\t\t\r\n\t\t\t\tadCnameList.push(\"2774\");\r\n\t\t\r\n\t\t\r\n  </script> \n  <script type=\"text/javascript\" src=\"/LSW/js/common/autocom.js\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/ls/ls.js\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/common/tree.js\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/common/img-common.js\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/json/json2.js\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/advertise.js\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/main/main.js?Time=1792418701\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/common/calendar.js\"></script> \n  <script type=\"text/javascript\" src=\"/LSW/js/jquery/jquery.fancybox-2.1.5.pack.mi"
  },
  {
   "req": [
@@ -33,7 +73,7 @@
   ],
   "status": 200,
   "type": "application/json",
-  "length": 23,
-  "body": "{\"ip\":\"172.214.45.201\"}"
+  "length": 22,
+  "body": "{\"ip\":\"68.220.61.162\"}"
  }
 ]
