@@ -9,8 +9,11 @@
     "display": "1"
    }
   ],
-  "error": "TypeError: fetch failed",
-  "cause": "ConnectTimeoutError: Connect Timeout Error (attempted address: www.law.go.kr:443, timeout: 10000ms)"
+  "status": 200,
+  "type": "application/json;charset=UTF-8",
+  "length": 695,
+  "attempt": 1,
+  "body": "{\"LawSearch\": {\n    \"law\": {\n        \"현행연혁코드\": \"현행\",\n        \"법령일련번호\": \"276117\",\n        \"자법타법여부\": \"\",\n        \"법령상세링크\": \"/DRF/lawService.do?OC=***&target=law&MST=276117&type=HTML&mobileYn=&efYd=20260102\",\n        \"법령명한글\": \"부가가치세법\",\n        \"법령구분명\": \"법률\",\n        \"소관부처명\": \"재정경제부\",\n        \"공포번호\": \"21065\",\n        \"제개정구분명\": \"타법개정\",\n        \"소관부처코드\": \"1053000\",\n        \"id\": \"1\",\n        \"법령ID\": \"001571\",\n        \"공동부령정보\": \"\",\n        \"시행일자\": \"20260102\",\n        \"공포일자\": \"20251001\",\n        \"법령약칭명\": \"\"\n    },\n    \"resultMsg\": \"success\",\n    \"키워드\": \"부가가치세법\",\n    \"page\": \"1\",\n    \"resultCode\": \"00\",\n    \"target\": \"law\",\n    \"totalCnt\": \"3\",\n    \"section\": \"lawNm\",\n    \"numOfRows\": \"1\"\n}}"
  },
  {
   "req": [
@@ -21,8 +24,11 @@
     "ID": "624793"
    }
   ],
-  "error": "TypeError: fetch failed",
-  "cause": "ConnectTimeoutError: Connect Timeout Error (attempted address: www.law.go.kr:443, timeout: 10000ms)"
+  "status": 200,
+  "type": "application/json;charset=UTF-8",
+  "length": 42,
+  "attempt": 1,
+  "body": "{\"Law\": \"일치하는 판례가 없습니다.  판례명을 확인하여 주십시오.\"}"
  },
  {
   "req": [
@@ -34,8 +40,11 @@
     "type": "HTML"
    }
   ],
-  "error": "TypeError: fetch failed",
-  "cause": "ConnectTimeoutError: Connect Timeout Error (attempted address: www.law.go.kr:443, timeout: 10000ms)"
+  "status": 200,
+  "type": "text/html;charset=UTF-8",
+  "length": 1881,
+  "attempt": 1,
+  "body": "\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n<html>\r\n<head>\r\n<script type=\"text/javascript\" src=\"/DRF/js/jquery.js\"></script>\r\n\r\n\t<style>\r\n\tbody {\r\n\t    overflow: hidden; \r\n\t    width: 100%;\r\n\t\theight : 100%;\r\n\t}\r\n\t\r\n\t#bodyDiv {\r\n\t\twidth: 100%;\r\n\t\theight: 100%;\r\n\t\toverflow-x : hidden;\r\n\t\toverflow-y : auto;\r\n\t}\r\n\t\r\n\t</style>\r\n</head>\r\n<script type=\"text/javascript\">\r\n\t$(document).ready(function(){\r\n\t\t// 모바일일 경우 수행\t\t\r\n\t\tif($(\"#mobileYn\").val() == 'Y'){\r\n\t\t\tvar url = \"mobilePrecInfoR.do\";\r\n\t\t\tvar param = \"precSeq=\"+$(\"#precSeq\").val(); \r\n\t\t\t\r\n\t\t\t$.ajax({\r\n\t\t\t\turl: url,\r\n\t\t\t\ttype:'POST',\r\n\t\t\t\tdataType:'text',\r\n\t\t\t\tdata: param,\r\n\t\t\t\ttimeout : 150000,\r\n\t\t        error : function(request,status,error){\r\n\t\t        \t//alert(\"다시 실행해주시기 바랍니다. :: \" + status);\r\n\t\t        \tlocation.href = $(\"#url\").val();\r\n\t\t        },\r\n\t\t\t\tsuccess: function(responseData, result){\r\n\t\t\t\t\tif(responseData != ''){\r\n\t\t\t\t\t\t$(\"#bodyDiv\").html(responseData);\r\n\t\t\t\t\t}else{\r\n\t\t\t\t\t\tlocation.href = $(\"#url\").val();\r\n\t\t\t\t\t}\r\n\t\t\t\t\t\r\n\t\t\t\t}\r\n\t\t\t});\t\r\n\t\t}\r\n\t});\r\n</script>\r\n<body topmargin=\"0\" leftmargin=\"0\" rightmargin=\"0\" bottommargin=\"0\" marginheight=\"0\" marginwidth=\"0\">\r\n<input type=\"hidden\" id=\"precSeq\" value =\"624793\"/>\r\n<input type=\"hidden\" id=\"mobileYn\" value=\"\"/> \r\n<input type=\"hidden\" id=\"url\" value=\"https://www.law.go.kr/LSW/precInfoP.do?precSeq=624793&mode=0\"/>\r\n\r\n\t\r\n\t\r\n\t\t<table cellspacing=\"1\" cellpadding=\"0\" border=\"0\" height=\"98%\" width=\"100%\" style=\"border:1px solid #cacaca;\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td>\r\n\t\t\t\t\t<iframe style=\"position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; width: 100%; height: 100%;\"\r\n\t\t\t\t\t\t\tscrolling=\"auto\" frameborder=\"0\"\r\n\t\t\t\t\t\t  \twidth=\"100%\" height=\"100%\"\r\n\t\t\t\t\t      \tmarginheight=\"0\" marginwidth=\"0\" tabIndex=\"-1\"\r\n\t\t\t\t\t\t\tsrc = \"https://www.law.go.kr/LSW/precInfoP.do?precSeq=624793&mode=0\"></iframe>\r\n\t\t\t\t</td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\r\n\r\n</body>\r\n</html>\r\n"
  },
  {
   "req": [
@@ -47,7 +56,10 @@
     "type": "XML"
    }
   ],
-  "error": "TypeError: fetch failed",
-  "cause": "ConnectTimeoutError: Connect Timeout Error (attempted address: www.law.go.kr:443, timeout: 10000ms)"
+  "status": 200,
+  "type": "text/xml;charset=UTF-8",
+  "length": 80,
+  "attempt": 1,
+  "body": "<?xml version=\"1.0\" encoding=\"utf-8\"?><Law>일치하는 판례가 없습니다.  판례명을 확인하여 주십시오.</Law>"
  }
 ]
