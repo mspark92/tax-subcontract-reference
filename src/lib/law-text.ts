@@ -1,0 +1,3 @@
+import type {RecordItem,LawBody} from './types';
+export const normalizeLaw=(s:string)=>s.toLowerCase().replace(/[\sㆍ·･]/g,'');
+export function searchLawSections(r:RecordItem,body:LawBody|undefined,terms:string[]){if(!body)return [];const title=normalizeLaw(r.title);const tokens=terms.filter(t=>!title.includes(normalizeLaw(t))).map(normalizeLaw);return body.lawSections.map(s=>{const text=body.content.slice(s.start,s.end);const normalized=normalizeLaw(s.title+' '+text);const matched=tokens.filter(t=>normalized.includes(t)).length;return {section:s,text,matched,score:matched*4+tokens.filter(t=>normalizeLaw(s.title).includes(t)).length*8};}).filter(h=>!tokens.length||h.matched/tokens.length>=.66).sort((a,b)=>b.score-a.score||a.section.start-b.section.start);}

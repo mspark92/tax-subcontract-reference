@@ -1,0 +1,75 @@
+name: 자료 수집 및 사이트 배포
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # 평일 08:30 KST(전날 23:30 UTC, 일~목). 09:00 Claude 검토 전에 수집을 끝냅니다.
+    - cron: '30 23 * * 0-4'
+  workflow_dispatch:
+    inputs:
+      collect:
+        description: '공식 자료 수집 실행'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: site
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.collect)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    outputs:
+      changes: ${{ steps.run.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 국가법령정보센터 자료 수집
+        id: run
+        env:
+          LAW_API_OC: ${{ secrets.LAW_API_OC }}
+        run: node collector/collect.mjs
+      - name: 변경 자료 저장
+        if: always()
+        run: |
+          git config user.name "reference-bot"
+          git config user.email "reference-bot@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then echo "변경 없음"; exit 0; fi
+          git commit -m "자료 자동 확인 $(TZ=Asia/Seoul date +%F)"
+          git push
+
+  deploy:
+    needs: collect
+    if: always() && (needs.collect.result == 'success' || needs.collect.result == 'skipped' || needs.collect.result == 'failure')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: node build.mjs
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
