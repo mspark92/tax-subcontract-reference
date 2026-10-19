@@ -37,8 +37,8 @@ export const DOMAINS={
   ],
   sources:[
    {id:'expc',kind:'qa',name:'법제처 법령해석',target:'expc',queries:['소득세','법인세','부가가치세','상속세','증여세','국세기본법','조세특례제한법','지방세','종합부동산세','관세'],limit:300,keep:600},
-   {id:'nts',kind:'qa',name:'국세청 질의회신',target:'ntsCgmExpc',queries:[''],limit:600,keep:1500},
-   {id:'moef',kind:'qa',name:'기획재정부 법령해석',target:'moefCgmExpc',queries:[''],limit:300,keep:800},
+   {id:'nts',kind:'qa',name:'국세청 질의회신',target:'ntsCgmExpc',queries:[''],limit:600,keep:1500,detail:false},
+   {id:'moef',kind:'qa',name:'기획재정부 법령해석',target:'moefCgmExpc',queries:[''],limit:300,keep:800,detail:false},
    {id:'tt',kind:'case',name:'조세심판원 결정',target:'ttSpecialDecc',queries:[''],limit:600,keep:1200},
    {id:'prec',kind:'case',name:'조세 판례',target:'prec',queries:['소득세','법인세','부가가치세','상속세','증여세','종합부동산세','취득세','국세기본법'],limit:400,keep:800,listOnly:false},
   ],

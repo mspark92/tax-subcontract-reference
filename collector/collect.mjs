@@ -100,7 +100,7 @@ function recordFromDetail(domain,src,id,listRow,detail){
  const base={id,domain,kind:src.kind,title,date:d,tags:[src.name,...(number?[number]:[])],collectedAt:NOW,source:src.id,caseNumber:number||undefined,reference:[number,d].filter(Boolean).join(', ')||undefined,url:publicUrl(src.target,id,f)};
  const cat=(fallback)=>domain==='tax'?(taxCategory(f['세목'],listRow._query,number,title)||fallback):fallback;
  if(!detail){// 본문을 받을 수 없는 해석: 목록 정보만 등록
-  return {...base,agency:pick(f,['해석기관명','회신기관명'])||src.name,category:cat(src.name),summary:title,content:'',noBody:true,warning:'회신 원문은 아직 수록되지 않았습니다. 공식 출처에서 원문을 확인하세요.'};
+  return {...base,agency:pick(f,['해석기관명','회신기관명'])||src.name,category:cat(src.name),summary:title,content:'',noBody:true,warning:'법제처 Open API가 이 해석의 본문을 제공하지 않아 제목·번호만 수록했습니다. 회신 원문은 공식 출처(국세법령정보시스템)에서 확인하세요.'};
  }
  if(src.target==='expc'||/CgmExpc$/.test(src.target)){
   const question=T('질의요지')||T('질의내용');const answer=[T('회답')||T('회신내용'),T('이유')?'【이유】\n'+T('이유'):''].filter(Boolean).join('\n\n');
@@ -301,7 +301,7 @@ async function collectSources(domain,cfg,state,results,pending){
   for(const r of mine.slice(src.keep||src.limit*2))have.delete(r.id);
   if(added)pending.push({type:'source',domain,source:src.name,kind:src.kind,added,detectedAt:NOW,ids:mine.filter(r=>r.collectedAt===NOW&&!r.noBody).map(r=>r.id).slice(0,30)});
   const status=!rows.size&&errors.length?'error':'success';
-  results.push({source:`${cfg.label} ${src.name}`,status,checked:rows.size,added:added+listed,updated:filled,note:[`최신순 ${rows.size}건 확인`,listed?`목록만 등록 ${listed}건`:'',pageFilled?`판례 화면에서 보완 ${pageFilled}건`:'',blockedDetail?'본문 API 미신청':'',detailErrors.length?`상세 실패 ${detailErrors.length}건`:''].filter(Boolean).join(' · '),error:status==='error'?errors[0]:undefined});
+  results.push({source:`${cfg.label} ${src.name}`,status,checked:rows.size,added:added+listed,updated:filled,note:[`최신순 ${rows.size}건 확인`,listed?`목록만 등록 ${listed}건`:'',pageFilled?`판례 화면에서 보완 ${pageFilled}건`:'',blockedDetail?'본문 API 미신청':'',src.detail===false?'본문은 API 미제공(목록·원문 링크만)':'',detailErrors.length?`상세 실패 ${detailErrors.length}건`:''].filter(Boolean).join(' · '),error:status==='error'?errors[0]:undefined});
  }
  state.catalog=[...have.values()].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||a.id.localeCompare(b.id));
 }
