@@ -122,10 +122,9 @@ function publicUrl(target,rawId,f){
  const link=pick(f,['법령해석상세링크']);if(/^https:\/\/taxlaw\.nts\.go\.kr/.test(link))return link;
  if(target==='prec')return 'https://www.law.go.kr/LSW/precInfoP.do?precSeq='+id;
  if(target==='expc')return 'https://www.law.go.kr/LSW/expcInfoP.do?expcSeq='+id;
- if(target==='ttSpecialDecc')return 'https://www.law.go.kr/LSW/specialDeccInfoP.do?specialDeccSeq='+id;
- if(target==='ftc')return 'https://www.law.go.kr/LSW/cmtDecInfoP.do?cmtDecSeq='+id+'&tbNm=ftc';
- const q=pick(f,NUMBER)||pick(f,TITLE);
- return 'https://www.law.go.kr/LSW/totalSearch.do?query='+encodeURIComponent(q);
+ if(target==='ftc')return 'https://www.law.go.kr/LSW/ftcInfoP.do?ftcSeq='+id;
+ // 조세심판원 결정 등 개별 공개 주소가 확인되지 않은 자료는 국가법령정보센터 첫 화면으로 연결하고, 화면에 사건번호를 표시합니다.
+ return 'https://www.law.go.kr/LSW/main.html';
 }
 
 // 법령 조문 → 본문/구간
