@@ -12,6 +12,10 @@ on:
         description: '공식 자료 수집 실행'
         type: boolean
         default: true
+      debug:
+        description: '응답 구조 진단 파일 저장'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -38,6 +42,7 @@ jobs:
         id: run
         env:
           LAW_API_OC: ${{ secrets.LAW_API_OC }}
+          COLLECT_DEBUG: ${{ inputs.debug && '1' || '0' }}
         run: node collector/collect.mjs
       - name: 변경 자료 저장
         if: always()

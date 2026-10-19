@@ -15,6 +15,9 @@ const OC=process.env.LAW_API_OC;
 const INIT=Boolean(opt('init'));
 const ONLY=opt('only');
 const DOMAIN_FILTER=opt('domain');
+const DEBUG=Boolean(opt('debug'))||process.env.COLLECT_DEBUG==='1';
+const debugSeen=new Set();
+function debugDump(tag,j){if(!DEBUG||debugSeen.has(tag))return;debugSeen.add(tag);const redact=JSON.stringify(j).replace(/OC=[^&"]*/g,'OC=***');const shrink=(x,d=0)=>Array.isArray(x)?x.slice(0,2).map(v=>shrink(v,d+1)):x&&typeof x==='object'?Object.fromEntries(Object.entries(x).map(([k,v])=>[k,shrink(v,d+1)])):typeof x==='string'&&x.length>300?x.slice(0,300)+'…':x;writeJson(path.join(DATA,'_debug',tag.replace(/[^a-zA-Z0-9_-]/g,'_')+'.json'),shrink(JSON.parse(redact)));}
 const NOW=new Date().toISOString();
 const LAW_WARNING='국가법령정보센터 API 조문·부칙 수집본입니다. 조문별 시행일과 별표·서식은 공식 원문을 확인하세요.';
 const MAX_TEXT=20000;
@@ -43,7 +46,7 @@ async function api(endpoint,params){
    if(/^\s*</.test(t)){const msg=clean(t).slice(0,160);throw Error('JSON 대신 HTML 응답: '+msg);}
    const j=JSON.parse(t);
    if(j?.result&&/실패|검증|없습니다/.test(String(j.result)))throw Error(String(j.result)+' '+String(j.msg||''));
-   successes++;return j;
+   successes++;debugDump(endpoint.replace('.do','')+'-'+(params.target||'x'),j);return j;
   }catch(e){last=e;await sleep(800*(attempt+1));}
  }
  failures++;
