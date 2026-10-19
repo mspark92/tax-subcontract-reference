@@ -127,6 +127,24 @@ function publicUrl(target,rawId,f){
  return 'https://www.law.go.kr/LSW/main.html';
 }
 
+
+// 국세법령정보시스템 출처 판례는 DRF 본문 API가 비어 있어, 법령정보센터 판례 화면(precInfoR.do, 인증키 불필요)에서 판시사항·판결요지 등을 받습니다.
+async function precFromPage(id){
+ const url='https://www.law.go.kr/LSW/precInfoR.do?precSeq='+encodeURIComponent(id);
+ for(let i=0;i<3;i++){
+  try{
+   const r=await fetch(url,{signal:AbortSignal.timeout(40000),headers:{'User-Agent':'Mozilla/5.0 tax-subcontract-reference'}});if(!r.ok)throw Error('HTTP '+r.status);
+   const html=await r.text();
+   const link=(html.match(/https:\/\/taxlaw\.nts\.go\.kr\/qt\/USEQTA002P\.do\?ntstDcmId=\d+/)||[])[0];
+   const text=html.replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,'').replace(/<br\s*\/?>/gi,'\n').replace(/<\/(p|div|li|tr|h\d)>/gi,'\n').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&amp;/g,'&');
+   const sections={};
+   for(const m of text.matchAll(/【([^】]{2,10})】([\s\S]*?)(?=【[^】]{2,10}】|\/\*\*|\bfunction\s|\(function|$)/g)){const body=m[2].replace(/[ \t]+/g,' ').replace(/\n\s*\n+/g,'\n').trim();if(body&&!sections[m[1]])sections[m[1]]=body;}
+   const head=text.match(/\[([^\]]*\d{4}\.\s*\d{1,2}\.\s*\d{1,2}\.[^\]]*)\]/);
+   return {sections,link,court:head?head[1].trim():''};
+  }catch(e){if(i===2)throw e;await sleep(1500*(i+1));}
+ }
+}
+
 // 법령 조문 → 본문/구간
 function lawText(x){if(!x||typeof x!=='object')return strings(x);if(Array.isArray(x))return x.flatMap(lawText);return ['조문내용','항내용','호내용','목내용','부칙내용'].flatMap(k=>strings(x[k])).concat(['항','호','목'].flatMap(k=>lawText(x[k])));}
 function buildLawBody(root){
@@ -257,13 +275,19 @@ async function collectSources(domain,cfg,state,results,pending){
   // 새 항목 + 본문이 없던 기존 항목(신청 승인 후 채우기)
   const key=(raw)=>`${domain}-${src.id}-${raw}`;
   const todo=[...rows.entries()].filter(([raw])=>!have.has(key(raw))||have.get(key(raw)).noBody);
-  let added=0,filled=0,listed=0,blockedDetail=0;const detailErrors=[];
+  let added=0,filled=0,listed=0,blockedDetail=0,pageFilled=0;const detailErrors=[];
   await pool(todo,4,async([raw,row])=>{
    const id=key(raw);const existed=have.get(id);
    if(src.detail===false||(blockedDetail>=3&&existed?.noBody)){if(!existed){have.set(id,recordFromDetail(domain,src,id,row,null));listed++;}return;}
    try{
     const d=await api('lawService.do',{target:src.target,ID:raw});
-    const rec=recordFromDetail(domain,src,id,row,d);
+    let rec=recordFromDetail(domain,src,id,row,d);
+    if(src.target==='prec'&&!rec.content){
+     const pg=await precFromPage(raw).catch(()=>null);
+     const keys=['판시사항','판결요지','참조조문','참조판례','전문'];
+     const body=pg?keys.filter(k=>pg.sections[k]).map(k=>`【${k}】\n${pg.sections[k]}`).join('\n\n'):'';
+     if(body){rec={...rec,content:cut(body,CASE_TEXT),summary:(pg.sections['판시사항']||pg.sections['판결요지']||rec.title).replace(/\s+/g,' ').slice(0,260),url:pg.link||rec.url,agency:pg.court?pg.court.split(/\s\d{4}\./)[0]:rec.agency,warning:pg.sections['전문']?CASE_WARNING:'판시사항·판결요지만 수록했습니다. 판결 전문은 공식 출처(국세법령정보시스템)에서 확인하세요. '+CASE_WARNING,partialText:!pg.sections['전문']};pageFilled++;}
+    }
     if(rec.content||rec.answer){have.set(id,rec);existed?filled++:added++;}
     else if(src.listOnly!==false&&!existed){have.set(id,recordFromDetail(domain,src,id,row,null));listed++;}
    }catch(err){
@@ -277,7 +301,7 @@ async function collectSources(domain,cfg,state,results,pending){
   for(const r of mine.slice(src.keep||src.limit*2))have.delete(r.id);
   if(added)pending.push({type:'source',domain,source:src.name,kind:src.kind,added,detectedAt:NOW,ids:mine.filter(r=>r.collectedAt===NOW&&!r.noBody).map(r=>r.id).slice(0,30)});
   const status=!rows.size&&errors.length?'error':'success';
-  results.push({source:`${cfg.label} ${src.name}`,status,checked:rows.size,added:added+listed,updated:filled,note:[`최신순 ${rows.size}건 확인`,listed?`목록만 등록 ${listed}건`:'',blockedDetail?'본문 API 미신청':'',detailErrors.length?`상세 실패 ${detailErrors.length}건`:''].filter(Boolean).join(' · '),error:status==='error'?errors[0]:undefined});
+  results.push({source:`${cfg.label} ${src.name}`,status,checked:rows.size,added:added+listed,updated:filled,note:[`최신순 ${rows.size}건 확인`,listed?`목록만 등록 ${listed}건`:'',pageFilled?`판례 화면에서 보완 ${pageFilled}건`:'',blockedDetail?'본문 API 미신청':'',detailErrors.length?`상세 실패 ${detailErrors.length}건`:''].filter(Boolean).join(' · '),error:status==='error'?errors[0]:undefined});
  }
  state.catalog=[...have.values()].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||a.id.localeCompare(b.id));
 }

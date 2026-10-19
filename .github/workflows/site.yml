@@ -52,10 +52,12 @@ jobs:
           if [ "$PROBE" = "diag" ]; then node collector/diag.mjs; elif [ -n "$PROBE" ]; then node collector/probe.mjs; else node collector/collect.mjs; fi
       - name: 변경 자료 저장
         if: always()
+        env:
+          PROBE: ${{ inputs.probe }}
         run: |
           git config user.name "reference-bot"
           git config user.email "reference-bot@users.noreply.github.com"
-          git add data; [ -d data/_debug ] && git add -f data/_debug || true
+          git add data; if [ -n "$PROBE" ] && [ -d data/_debug ]; then git add -f data/_debug; fi
           if git diff --cached --quiet; then echo "변경 없음"; exit 0; fi
           git commit -m "자료 자동 확인 $(TZ=Asia/Seoul date +%F)"
           git push
