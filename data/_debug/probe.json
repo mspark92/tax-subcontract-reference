@@ -9,25 +9,20 @@
     "display": "1"
    }
   ],
-  "status": 200,
-  "type": "application/json;charset=UTF-8",
-  "length": 115,
-  "body": "{\n    \"result\" : \"사용자 정보 검증에 실패하였습니다.\",\n    \"msg\" : \"OPEN API 호출 시 사용자 검증을 위하여 정확한 서버장비의 IP주소 및 도메인주소를 등록해 주세요.\"\n}\n"
+  "error": "TypeError: fetch failed",
+  "cause": "ConnectTimeoutError: Connect Timeout Error (attempted address: www.law.go.kr:443, timeout: 10000ms)"
  },
  {
   "req": [
    "DRF",
-   "lawSearch.do",
+   "lawService.do",
    {
     "target": "prec",
-    "query": "법인세",
-    "display": "1"
+    "ID": "624793"
    }
   ],
-  "status": 200,
-  "type": "application/json;charset=UTF-8",
-  "length": 115,
-  "body": "{\n    \"result\" : \"사용자 정보 검증에 실패하였습니다.\",\n    \"msg\" : \"OPEN API 호출 시 사용자 검증을 위하여 정확한 서버장비의 IP주소 및 도메인주소를 등록해 주세요.\"\n}\n"
+  "error": "TypeError: fetch failed",
+  "cause": "ConnectTimeoutError: Connect Timeout Error (attempted address: www.law.go.kr:443, timeout: 10000ms)"
  },
  {
   "req": [
@@ -39,20 +34,20 @@
     "type": "HTML"
    }
   ],
-  "status": 200,
-  "type": "text/html;charset=UTF-8",
-  "length": 1489,
-  "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"ko\" xml:lang=\"ko\">\r\n<head>\r\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">      \r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">  \r\n<link rel=\"stylesheet\" type=\"text/css\" href=\"/DRF/css/common.css\">\r\n<script type=\"text/javascript\" src=\"/DRF/js/common/jquery/jquery.js\"></script>\r\n\t<script type=\"text/javascript\" src=\"/DRF/js/common/jquery/jquery.form.js\"></script>\r\n\t<script type=\"text/javascript\" src=\"/DRF/js/ext/adapter/ext/ext-base.js\"></script>\r\n\t<script type=\"text/javascript\" src=\"/DRF/js/ext/ext-all.js\"></script>\r\n\t<script type=\"text/javascript\" src=\"/DRF/js/common.js\"></script>\r\n\t<script type=\"text/javascript\" src=\"/DRF/js/common-ex.js\"></script>\r\n\t<script type=\"text/javascript\" src=\"/DRF/js/CookieUtil.js\"></script>\r\n<title>국가법령정보 공동활용</title>\r\n</head> \r\n<body> \r\n<!-- //error500 -->\r\n<div id=\"error500\">\r\n\t<h1><a href=\"#\"><img src=\"/DRF/images/topmenu/LSO_top_logo.gif\" alt=\"국가법령정보 공동활용\"></a></h1>\r\n\t<div class=\"error_txt\">\r\n\t\t<h2>페이지 접속에 실패하였습니다.</h2>\r\n\t\t<p>접속하신 기관에 문의하여 주시기 바랍니다.<br/>또는&nbsp;\r\n\t\t<a href=\"https://www.law.go.kr\" style = \"font-style:normal; font-size: 14px; color: #175ec9; font-weight: 600; text-decoration:underline;\">국가법령정보센터(바로가기)</a>를 이용해 주세요.\r\n\t\t</p>\r\n\t\t<em>법제처 공동활용 유지보수팀(02-2109-6446)</em>\r\n\t</div>\r\n</div>\r\n<!-- error500// -->\r\n \r\n</body>\r\n</html>"
+  "error": "TypeError: fetch failed",
+  "cause": "ConnectTimeoutError: Connect Timeout Error (attempted address: www.law.go.kr:443, timeout: 10000ms)"
  },
  {
   "req": [
-   "URL",
-   "https://api.ipify.org?format=json",
-   null
+   "DRF",
+   "lawService.do",
+   {
+    "target": "prec",
+    "ID": "624793",
+    "type": "XML"
+   }
   ],
-  "status": 200,
-  "type": "application/json",
-  "length": 20,
-  "body": "{\"ip\":\"4.236.167.8\"}"
+  "error": "TypeError: fetch failed",
+  "cause": "ConnectTimeoutError: Connect Timeout Error (attempted address: www.law.go.kr:443, timeout: 10000ms)"
  }
 ]
