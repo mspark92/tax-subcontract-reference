@@ -27,7 +27,7 @@ const writeJson=(f,v)=>{fs.mkdirSync(path.dirname(f),{recursive:true});fs.writeF
 const arr=(x)=>Array.isArray(x)?x:x==null||x===''?[]:[x];
 const sha=(s)=>crypto.createHash('sha256').update(s).digest('hex');
 const norm=(s)=>String(s||'').replace(/[\s·ㆍ･]/g,'').toLowerCase();
-const date=(x)=>{const s=String(x||'').replace(/\D/g,'');return s.length===8?`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6)}`:'';};
+const date=(x)=>{const t=String(x||'').trim();const m=t.match(/^(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);if(m)return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;const s=t.replace(/\D/g,'');return s.length===8?`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6)}`:'';};
 const clean=(s)=>String(s??'').replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
 const strings=(x)=>typeof x==='string'||typeof x==='number'?[String(x)]:Array.isArray(x)?x.flatMap(strings):[];
 const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
@@ -77,33 +77,50 @@ function flatten(j){
 }
 const TITLE=['사건명','안건명','제목','해석례명','법령해석례명','결정례명','재결례명','행정규칙명','건명'];
 const DATE=['선고일자','의결일자','결정일자','재결일자','해석일자','회신일자','회답일자','의결일','발령일자','시행일자','등록일자','작성일자'];
-const NUMBER=['사건번호','안건번호','청구번호','의결번호','사건번호명','해석번호','발령번호'];
-const QUESTION=['질의요지','질의내용','질의','쟁점','청구취지'];
-const ANSWER=['회답','회신내용','회신','답변','해석내용','판단','주문'];
-const SUMMARY=['판시사항','결정요지','판결요지','재결요지','요지','결정요약','질의요지'];
-const BODY_ORDER=[...QUESTION,...ANSWER,'이유','판결요지','판시사항','결정요지','재결요지','참조조문','참조판례','관련법령','처분내용','전문','본문','내용'];
+const NUMBER=['사건번호','안건번호','청구번호','의결번호','해석번호','발령번호'];
+const CASE_TEXT=8000;
+// 목록 값 위에 상세 값을 덮되, 빈 값으로 덮어쓰지 않습니다.
+const merge=(...objs)=>{const out={};for(const o of objs)for(const [k,v] of Object.entries(o))if(String(v??'').trim()||!(k in out))out[k]=v;return out;};
+const cut=(t,n)=>t.length>n?t.slice(0,n)+'\n…(원문이 길어 일부만 수록했습니다. 전체는 공식 출처에서 확인하세요.)':t;
+const TAX_WORDS=[['부가','부가가치세'],['종부','종합부동산세'],['종합부동산','종합부동산세'],['법인','법인세'],['양도','양도소득세'],['종소','종합소득세'],['원천','원천징수'],['소득','소득세'],['상속','상속세·증여세'],['증여','상속세·증여세'],['상증','상속세·증여세'],['재산세제','상속세·증여세'],['조특','조세특례'],['조세특례','조세특례'],['국조','국제조세'],['국제','국제조세'],['국기','국세기본법'],['기본법','국세기본법'],['징수','국세징수'],['취득','취득세'],['재산','재산세'],['등록','등록면허세'],['지방','지방세'],['개소','개별소비세'],['소비','개별소비세'],['환경','교통·에너지·환경세'],['관세','관세'],['인지','인지세'],['증권','증권거래세'],['교육','교육세'],['농특','농어촌특별세'],['주세','주세']];
+export function taxCategory(...texts){for(const t of texts){const s=String(t||'');for(const [k,v] of TAX_WORDS)if(s.includes(k))return v;}return '';}
+function decisionOf(text){const t=String(text||'');for(const [re,v] of [[/각하/,'각하'],[/기각/,'기각'],[/취소한다|취소하/,'취소'],[/경정/,'경정'],[/재조사/,'재조사'],[/과징금/,'과징금'],[/시정명령|시정조치|하여서는 아니 된다|행위를 다시/,'시정명령'],[/경고/,'경고'],[/고발/,'고발']])if(re.test(t))return v;return undefined;}
+const QA_WARNING='회신 당시 법령 기준입니다. 현재 법령과 대조해 확인하세요.';
+const CASE_WARNING='개별 사건의 판단입니다. 사실관계와 적용 법령 시점이 다르면 결론이 달라질 수 있습니다.';
 function recordFromDetail(domain,src,id,listRow,detail){
- const f={...flatten(listRow),...flatten(detail)};
- const title=pick(f,TITLE)||pickBy(f,/명$/,/법원명|기관명|부처명|종류명/)||'제목 미확인';
- const d=date(pick(f,DATE)||pickBy(f,/일자$/));
+ const f=merge(flatten(listRow),flatten(detail||{}));
+ const title=pick(f,TITLE)||'제목 미확인';
+ const d=date(pick(f,DATE));
  const number=pick(f,NUMBER);
- const question=pick(f,QUESTION);
- const answerParts=[pick(f,ANSWER),f['이유']?'【이유】\n'+clean(f['이유']):''].filter(Boolean);
- const used=new Set();const body=[];
- for(const k of BODY_ORDER){if(f[k]&&!used.has(k)&&clean(f[k]).length>20){used.add(k);body.push(`【${k}】\n${clean(f[k])}`);}}
- for(const [k,v] of Object.entries(f)){if(!used.has(k)&&!/링크|일련번호|코드|^id$|ID$/.test(k)&&clean(v).length>200){used.add(k);body.push(`【${k}】\n${clean(v)}`);}}
- const content=body.join('\n\n').slice(0,MAX_TEXT);
- const summary=(pick(f,SUMMARY)||content).replace(/\s+/g,' ').slice(0,260);
- const agency=pick(f,['법원명','해석기관명','회신기관명','소관부처명','기관명'])||src.name.replace(/ .*/,'');
- const category=src.kind==='case'?src.name:(pick(f,['법령분야','분야','세목','법령명'])||src.name);
- return {id,domain,kind:src.kind,title,agency,date:d,url:publicUrl(src.target,id,f),category:category.slice(0,40),summary,content,question:question||undefined,answer:answerParts.join('\n\n').slice(0,MAX_TEXT)||undefined,reference:[number,d].filter(Boolean).join(', ')||undefined,caseNumber:number||undefined,decision:pick(f,['재결결과','결정유형','판결유형','처분유형','조치유형'])||undefined,tags:[src.name,...(number?[number]:[])],collectedAt:NOW,source:src.id,warning:src.kind==='qa'?'회신 당시 법령 기준입니다. 현재 법령과 대조해 확인하세요.':'개별 사건의 판단입니다. 사실관계가 다르면 결론이 달라질 수 있습니다.'};
+ const T=(k)=>clean(f[k]||'').replace(/<img[^>]*>(<\/img>)?/g,'');
+ const sec=(...keys)=>keys.map(k=>T(k)?`【${k}】\n${T(k)}`:'').filter(Boolean).join('\n\n');
+ const base={id,domain,kind:src.kind,title,date:d,tags:[src.name,...(number?[number]:[])],collectedAt:NOW,source:src.id,caseNumber:number||undefined,reference:[number,d].filter(Boolean).join(', ')||undefined,url:publicUrl(src.target,id,f)};
+ const cat=(fallback)=>domain==='tax'?(taxCategory(f['세목'],listRow._query,number,title)||fallback):fallback;
+ if(!detail){// 본문을 받을 수 없는 해석: 목록 정보만 등록
+  return {...base,agency:pick(f,['해석기관명','회신기관명'])||src.name,category:cat(src.name),summary:title,content:'',noBody:true,warning:'회신 원문은 아직 수록되지 않았습니다. 공식 출처에서 원문을 확인하세요.'};
+ }
+ if(src.target==='expc'||/CgmExpc$/.test(src.target)){
+  const question=T('질의요지')||T('질의내용');const answer=[T('회답')||T('회신내용'),T('이유')?'【이유】\n'+T('이유'):''].filter(Boolean).join('\n\n');
+  return {...base,agency:pick(f,['해석기관명','회신기관명'])||src.name,category:cat(src.name),summary:(question||answer).replace(/\s+/g,' ').slice(0,260),content:'',question:question||undefined,answer:cut(answer,MAX_TEXT)||undefined,warning:QA_WARNING};
+ }
+ if(src.target==='ttSpecialDecc'){
+  const 세목=T('세목');
+  return {...base,agency:'조세심판원',category:cat('조세심판원 결정'),summary:(T('재결요지')||title).replace(/\s+/g,' ').slice(0,260),content:cut((sec('재결요지','주문','관련법령','참조결정')+'\n\n'+sec('이유')).trim(),CASE_TEXT),decision:decisionOf(T('주문')),tags:['조세심판원',...(세목?[세목]:[]),...(number?[number]:[])],warning:CASE_WARNING};
+ }
+ if(src.target==='ftc'){
+  return {...base,agency:'공정거래위원회',category:/이의신청/.test(title)?'이의신청 재결':pick(f,['문서유형'])||'의결서',summary:T('주문').replace(/\s+/g,' ').slice(0,260)||title,content:cut((sec('주문')+'\n\n'+sec('이유')).trim(),CASE_TEXT),decision:decisionOf(T('주문')),warning:CASE_WARNING};
+ }
+ // 판례
+ return {...base,agency:pick(f,['법원명'])||'법원',category:cat('판례'),summary:(T('판시사항')||T('판결요지')||title).replace(/\s+/g,' ').slice(0,260),content:cut((sec('판시사항','판결요지','참조조문','참조판례')+'\n\n'+sec('판례내용')).trim(),CASE_TEXT),decision:pick(f,['판결유형'])||undefined,warning:CASE_WARNING};
 }
 // 공개 열람 주소. OC(인증키)가 들어가는 DRF 주소는 공개하지 않습니다.
 function publicUrl(target,rawId,f){
  const id=String(rawId).split('-').pop();
+ const link=pick(f,['법령해석상세링크']);if(/^https:\/\/taxlaw\.nts\.go\.kr/.test(link))return link;
  if(target==='prec')return 'https://www.law.go.kr/LSW/precInfoP.do?precSeq='+id;
  if(target==='expc')return 'https://www.law.go.kr/LSW/expcInfoP.do?expcSeq='+id;
- if(target==='admrul')return 'https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq='+id;
+ if(target==='ttSpecialDecc')return 'https://www.law.go.kr/LSW/specialDeccInfoP.do?specialDeccSeq='+id;
+ if(target==='ftc')return 'https://www.law.go.kr/LSW/cmtDecInfoP.do?cmtDecSeq='+id+'&tbNm=ftc';
  const q=pick(f,NUMBER)||pick(f,TITLE);
  return 'https://www.law.go.kr/LSW/totalSearch.do?query='+encodeURIComponent(q);
 }
@@ -169,44 +186,52 @@ async function collectLaws(domain,cfg,state,results,pending){
 // 등록 목록에서 매번 덮어쓸 메타데이터
 function pickMeta(b){return {title:b.title,category:b.category,lawLevel:b.lawLevel,lawGroup:b.lawGroup,lawOrder:b.lawOrder,application:b.application,summary:b.summary,tags:b.tags,url:b.url};}
 
+// 행정규칙 본문: 조문형식이면 조문 배열, 아니면 한 덩어리 지침을 로마숫자 장 단위로 나눕니다.
+function ruleBody(o){
+ let parts=arr(o?.조문내용).flatMap(strings).map(clean).filter(Boolean);
+ if(parts.length===1&&parts[0].length>3000){const t=parts[0];const pieces=t.split(/(?=(?:^|\s)[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]{1,4}\s?\.\s?)|(?=제\d+조(?:의\d+)?\s?\()/).map(x=>x.trim()).filter(Boolean);if(pieces.length>1)parts=pieces;}
+ let content='';const sections=[];
+ parts.forEach((t,i)=>{const start=content.length;content+=t+'\n\n';sections.push({id:'article-'+i,title:t.split('\n')[0].slice(0,80),start,end:content.length,kind:'article'});});
+ for(const [i,t] of arr(o?.부칙?.부칙내용).flatMap(strings).map(clean).filter(Boolean).entries()){const start=content.length;content+=t+'\n\n';sections.push({id:'supplement-'+i,title:t.split('\n')[0].slice(0,80),start,end:content.length,kind:'supplement'});}
+ const links=arr(o?.첨부파일?.첨부파일링크).flatMap(strings),names=arr(o?.첨부파일?.첨부파일명).flatMap(strings);
+ const annexes=[...arr(o?.별표?.별표단위).map(b=>({title:clean(strings(b.별표제목).join(' ')),pdf:b.별표PDF파일링크?'https://www.law.go.kr'+b.별표PDF파일링크:undefined,file:b.별표서식파일링크?'https://www.law.go.kr'+b.별표서식파일링크:undefined})),...links.map((l,i)=>({title:clean(names[i]||'첨부파일 '+(i+1)),file:l.replace(/^http:\/\/(www\.)?law\.go\.kr/,'https://www.law.go.kr')}))].filter(a=>a.title);
+ const reason=clean(strings(o?.제개정이유?.제개정이유내용).join('\n'));
+ return {content,sections,annexes,reason};
+}
 async function collectRules(domain,cfg,state,results,pending){
  if(INIT||!OC)return;
  const files=domainFiles(domain);
  const prev=new Map(state.laws.filter(r=>r.lawTarget==='admrul').map(r=>[r.id,r]));
  const found=new Map();let checked=0,added=0,updated=0;const errors=[];
- await pool(cfg.rules.map((r,i)=>({...r,order:1000+i})),3,async(rule)=>{
+ for(const [order,rule] of cfg.rules.entries()){
   try{
-   const s=await api('lawSearch.do',{target:'admrul',query:rule.query,display:'50',nw:'1'});
-   const rows=listItems(s).items.filter(x=>norm(x.행정규칙명).includes(norm(rule.query))&&!/폐지/.test(String(x.제개정구분명||'')));
-   if(!rows.length)throw Error('검색 결과 없음');
-   for(const row of rows.slice(0,3)){
+   const s=await api('lawSearch.do',{target:'admrul',query:rule.query,display:'100'});
+   const rows=listItems(s).items.filter(x=>(x.현행연혁구분??'현행')==='현행'&&!/폐지/.test(String(x.제개정구분명||''))&&(!rule.ministries||rule.ministries.includes(clean(x.소관부처명||'')))&&(!rule.nameIncludes||rule.nameIncludes.some(k=>norm(x.행정규칙명).includes(norm(k))))&&!(rule.exclude||[]).some(k=>norm(x.행정규칙명).includes(norm(k))));
+   if(!rows.length){errors.push(rule.query+': 검색 결과 없음');continue;}
+   await pool(rows.slice(0,rule.max||10),3,async(row)=>{
     checked++;
     const name=clean(row.행정규칙명);const seq=String(row.행정규칙일련번호);const id=`${domain}-rule-${slug(name)}`;
-    if(found.has(id))continue;
+    if(found.has(id))return;found.set(id,null);
     const old=prev.get(id);
-    const base={id,domain,kind:'law',title:name,agency:clean(row.소관부처명||'')||'소관부처',date:date(row.발령일자),url:'https://www.law.go.kr/행정규칙/'+encodeURIComponent(name),category:rule.category,summary:`${clean(row.행정규칙종류||'행정규칙')} · ${clean(row.소관부처명||'')} 발령`,content:'',tags:[rule.category,'행정규칙'],lawLevel:clean(row.행정규칙종류||'행정규칙'),lawGroup:rule.group,lawOrder:rule.order,lawTarget:'admrul'};
+    const kindName=clean(row.행정규칙종류||'행정규칙');
+    const base={id,domain,kind:'law',title:name,agency:clean(row.소관부처명||'')||'소관부처',date:date(row.발령일자),url:'https://www.law.go.kr/행정규칙/'+encodeURIComponent(name),category:rule.category,summary:`${clean(row.소관부처명||'')} ${kindName} 제${clean(row.발령번호||'')}호 · ${rule.note||'관련 행정규칙'}`,content:'',tags:[rule.category,kindName],lawLevel:kindName,lawGroup:rule.group,lawOrder:1000+order,application:rule.note,lawTarget:'admrul'};
     const bodyFile=path.join(files.bodies,id+'.json');
-    if(old?.lawVersion===seq&&old.hasBody&&fs.existsSync(bodyFile)){found.set(id,{...old,lastCheckedAt:NOW});continue;}
+    if(old?.lawVersion===seq&&old.hasBody&&fs.existsSync(bodyFile)){found.set(id,{...old,...pickMeta(base),lastCheckedAt:NOW});return;}
     const d=await api('lawService.do',{target:'admrul',ID:seq});
-    const f=flatten(d);let o=d;while(o&&typeof o==='object'&&Object.keys(o).length===1)o=Object.values(o)[0];
-    const articles=arr(o?.조문내용).flatMap(strings).map(clean).filter(Boolean);
-    let content='';const sections=[];
-    const parts=articles.length?articles:[clean(strings(o?.본문||f.본문||'').join('\n'))].filter(Boolean);
-    parts.forEach((t,i)=>{const start=content.length;content+=t+'\n\n';sections.push({id:'article-'+i,title:t.split('\n')[0].slice(0,120),start,end:content.length,kind:'article'});});
-    for(const [i,t] of arr(o?.부칙?.부칙내용).flatMap(strings).map(clean).filter(Boolean).entries()){const start=content.length;content+=t+'\n\n';sections.push({id:'supplement-'+i,title:t.split('\n')[0].slice(0,120),start,end:content.length,kind:'supplement'});}
-    const annexes=arr(o?.별표?.별표단위).map(b=>({title:clean(strings(b.별표제목).join(' ')),pdf:b.별표PDF파일링크?'https://www.law.go.kr'+b.별표PDF파일링크:undefined,file:b.별표서식파일링크?'https://www.law.go.kr'+b.별표서식파일링크:undefined})).filter(a=>a.title);
-    if(!content){found.set(id,{...base,lastError:'본문 없음'});continue;}
+    let o=d;while(o&&typeof o==='object'&&Object.keys(o).length===1)o=Object.values(o)[0];
+    const body=ruleBody(o);
+    if(!body.content){found.set(id,{...base,lastError:'본문 없음'});return;}
     const oldBody=readJson(bodyFile,null);
-    writeJson(bodyFile,{id,content,lawSections:sections,annexes});
-    const rec={...base,effectiveDate:date(row.시행일자),promulgationDate:date(row.발령일자),edition:'시행 '+date(row.시행일자),lawVersion:seq,collectedAt:NOW,lastCheckedAt:NOW,sourceSnapshotUrl:'https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq='+seq,sourceHash:sha(content),hasBody:true,articleCount:sections.filter(s=>s.kind==='article').length,annexCount:annexes.length,warning:'국가법령정보센터 행정규칙 수집본입니다. 별표·서식은 공식 원문을 확인하세요.'};
-    if(old?.hasBody){updated++;pending.push({type:'rule',domain,id,title:name,lawLevel:rec.lawLevel,detectedAt:NOW,before:{version:old.lawVersion,effectiveDate:old.effectiveDate},after:{version:seq,effectiveDate:rec.effectiveDate,promulgationDate:rec.promulgationDate},diff:diffSections(oldBody,{content,sections})});}else added++;
+    writeJson(bodyFile,{id,content:body.content,lawSections:body.sections,annexes:body.annexes,revisionReason:body.reason.slice(0,30000)});
+    const rec={...base,effectiveDate:date(row.시행일자),promulgationDate:date(row.발령일자),edition:'시행 '+date(row.시행일자),lawVersion:seq,collectedAt:NOW,lastCheckedAt:NOW,sourceSnapshotUrl:'https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq='+seq,sourceHash:sha(body.content),hasBody:true,articleCount:body.sections.filter(s=>s.kind==='article').length,annexCount:body.annexes.length,warning:'국가법령정보센터 행정규칙 수집본입니다. 별표·서식·첨부파일은 공식 원문을 확인하세요.'};
+    if(old?.hasBody&&old.sourceHash!==rec.sourceHash){updated++;pending.push({type:'rule',domain,id,title:name,lawLevel:kindName,detectedAt:NOW,before:{version:old.lawVersion,effectiveDate:old.effectiveDate},after:{version:seq,effectiveDate:rec.effectiveDate,promulgationDate:rec.promulgationDate},diff:diffSections(oldBody,{content:body.content,sections:body.sections}),reasonExcerpt:body.reason.slice(0,4000)});}else if(!old?.hasBody)added++;
     found.set(id,rec);
-   }
+   });
   }catch(err){if(err.fatal)throw err;errors.push(rule.query+': '+(err.message||err));}
- });
+ }
  // 이번에 찾지 못한 기존 규칙은 보존합니다(일시적 오류로 사라지지 않도록).
- for(const [id,r] of prev)if(!found.has(id))found.set(id,r);
- state.laws=[...state.laws.filter(r=>r.lawTarget!=='admrul'),...[...found.values()].sort((a,b)=>a.lawOrder-b.lawOrder||a.title.localeCompare(b.title,'ko'))];
+ for(const [id,r] of prev)if(!found.get(id))found.set(id,r);
+ state.laws=[...state.laws.filter(r=>r.lawTarget!=='admrul'),...[...found.values()].filter(Boolean).sort((a,b)=>a.lawOrder-b.lawOrder||a.title.localeCompare(b.title,'ko'))];
  results.push({source:cfg.label+' 고시·지침·통칙(행정규칙)',status:errors.length===cfg.rules.length?'error':'success',checked,added,updated,note:errors.length?`미확인 ${errors.length}건: ${errors.slice(0,4).join(' / ')}`:'행정규칙 버전 확인',error:errors.length===cfg.rules.length?errors[0]:undefined});
 }
 
@@ -215,26 +240,42 @@ async function collectSources(domain,cfg,state,results,pending){
  const have=new Map(state.catalog.map(r=>[r.id,r]));
  for(const src of cfg.sources){
   const rows=new Map();const errors=[];
+  const per=Math.ceil(src.limit/src.queries.length);
   for(const q of src.queries){
-   const per=Math.ceil(src.limit/src.queries.length);
-   for(let page=1;rows.size<src.limit&&page<=Math.ceil(per/100);page++){
+   let got=0;
+   for(let page=1;got<per&&page<=Math.ceil(per/100);page++){
     try{
      const params={target:src.target,display:String(Math.min(100,per)),page:String(page),sort:'ddes'};if(q)params.query=q;
      const s=await api('lawSearch.do',params);const {items}=listItems(s);
-     for(const it of items){const raw=itemId(it);if(raw)rows.set(raw,it);}
+     for(const it of items){const raw=itemId(it);if(raw&&!rows.has(raw)){rows.set(raw,{...it,_query:q});got++;}}
      if(items.length<Math.min(100,per))break;
     }catch(err){if(err.fatal)throw err;errors.push((q||'전체')+': '+(err.message||err));break;}
    }
   }
-  const fresh=[...rows.entries()].filter(([raw])=>!have.has(`${domain}-${src.id}-${raw}`)).slice(0,src.limit);
-  let added=0;const detailErrors=[];
-  await pool(fresh,4,async([raw,row])=>{
-   try{const d=await api('lawService.do',{target:src.target,ID:raw});const rec=recordFromDetail(domain,src,`${domain}-${src.id}-${raw}`,row,d);if(rec.content||rec.answer){have.set(rec.id,rec);added++;}else detailErrors.push(raw+': 본문 없음');}
-   catch(err){if(err.fatal)throw err;detailErrors.push(raw+': '+(err.message||err));}
+  // 새 항목 + 본문이 없던 기존 항목(신청 승인 후 채우기)
+  const key=(raw)=>`${domain}-${src.id}-${raw}`;
+  const todo=[...rows.entries()].filter(([raw])=>!have.has(key(raw))||have.get(key(raw)).noBody);
+  let added=0,filled=0,listed=0,blockedDetail=0;const detailErrors=[];
+  await pool(todo,4,async([raw,row])=>{
+   const id=key(raw);const existed=have.get(id);
+   if(src.detail===false||(blockedDetail>=3&&existed?.noBody)){if(!existed){have.set(id,recordFromDetail(domain,src,id,row,null));listed++;}return;}
+   try{
+    const d=await api('lawService.do',{target:src.target,ID:raw});
+    const rec=recordFromDetail(domain,src,id,row,d);
+    if(rec.content||rec.answer){have.set(id,rec);existed?filled++:added++;}
+    else if(src.listOnly!==false&&!existed){have.set(id,recordFromDetail(domain,src,id,row,null));listed++;}
+   }catch(err){
+    if(err.fatal)throw err;
+    if(/미신청/.test(String(err.message))){blockedDetail++;if(!existed){have.set(id,recordFromDetail(domain,src,id,row,null));listed++;}}
+    else detailErrors.push(raw+': '+String(err.message||err).slice(0,80));
+   }
   });
-  if(added&&have.size)pending.push({type:'source',domain,source:src.name,kind:src.kind,added,detectedAt:NOW,ids:[...have.values()].filter(r=>r.source===src.id&&r.collectedAt===NOW).map(r=>r.id).slice(0,30)});
+  // 오래된 항목 정리: 출처별 상한을 넘으면 오래된 것부터 제외
+  const mine=[...have.values()].filter(r=>r.source===src.id).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  for(const r of mine.slice(src.keep||src.limit*2))have.delete(r.id);
+  if(added)pending.push({type:'source',domain,source:src.name,kind:src.kind,added,detectedAt:NOW,ids:mine.filter(r=>r.collectedAt===NOW&&!r.noBody).map(r=>r.id).slice(0,30)});
   const status=!rows.size&&errors.length?'error':'success';
-  results.push({source:`${cfg.label} ${src.name}`,status,checked:rows.size,added,updated:0,note:[`최신순 ${rows.size}건 확인`,detailErrors.length?`상세 실패 ${detailErrors.length}건`:''].filter(Boolean).join(' · '),error:status==='error'?errors[0]:undefined});
+  results.push({source:`${cfg.label} ${src.name}`,status,checked:rows.size,added:added+listed,updated:filled,note:[`최신순 ${rows.size}건 확인`,listed?`목록만 등록 ${listed}건`:'',blockedDetail?'본문 API 미신청':'',detailErrors.length?`상세 실패 ${detailErrors.length}건`:''].filter(Boolean).join(' · '),error:status==='error'?errors[0]:undefined});
  }
  state.catalog=[...have.values()].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||a.id.localeCompare(b.id));
 }
