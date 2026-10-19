@@ -1,0 +1,39 @@
+[
+ {
+  "req": [
+   "DRF",
+   "lawSearch.do",
+   {
+    "target": "law",
+    "query": "부가가치세법",
+    "display": "1"
+   }
+  ],
+  "error": "TypeError: fetch failed",
+  "cause": "ConnectTimeoutError: Connect Timeout Error (attempted address: www.law.go.kr:443, timeout: 10000ms)"
+ },
+ {
+  "req": [
+   "DRF",
+   "lawSearch.do",
+   {
+    "target": "prec",
+    "query": "법인세",
+    "display": "1"
+   }
+  ],
+  "error": "TypeError: fetch failed",
+  "cause": "ConnectTimeoutError: Connect Timeout Error (attempted address: www.law.go.kr:443, timeout: 10000ms)"
+ },
+ {
+  "req": [
+   "URL",
+   "https://api.ipify.org?format=json",
+   null
+  ],
+  "status": 200,
+  "type": "application/json",
+  "length": 23,
+  "body": "{\"ip\":\"172.214.45.201\"}"
+ }
+]
