@@ -1,5 +1,127 @@
 [
  {
+  "id": "061a5e1b-5810-44c4-abcf-737155b47c00",
+  "domain": "subcon",
+  "startedAt": "2026-10-19T23:56:33.885Z",
+  "completedAt": "2026-10-19T23:56:48.374Z",
+  "status": "success",
+  "results": [
+   {
+    "source": "하도급법 법령(국가법령정보센터)",
+    "status": "success",
+    "checked": 13,
+    "added": 0,
+    "updated": 0,
+    "note": "현행 법령 버전 확인"
+   },
+   {
+    "source": "하도급법 고시·지침·통칙(행정규칙)",
+    "status": "success",
+    "checked": 21,
+    "added": 0,
+    "updated": 0,
+    "note": "미확인 2건: 수급사업자: 검색 결과 없음 / 기술자료: 검색 결과 없음"
+   },
+   {
+    "source": "하도급법 법제처 법령해석",
+    "status": "success",
+    "checked": 70,
+    "added": 0,
+    "updated": 0,
+    "note": "최신순 70건 확인"
+   },
+   {
+    "source": "하도급법 국토교통부 법령해석",
+    "status": "success",
+    "checked": 38,
+    "added": 0,
+    "updated": 0,
+    "note": "최신순 38건 확인"
+   },
+   {
+    "source": "하도급법 공정거래위원회 의결",
+    "status": "success",
+    "checked": 305,
+    "added": 0,
+    "updated": 0,
+    "note": "최신순 305건 확인"
+   },
+   {
+    "source": "하도급법 하도급 판례",
+    "status": "success",
+    "checked": 32,
+    "added": 0,
+    "updated": 0,
+    "note": "최신순 32건 확인"
+   }
+  ]
+ },
+ {
+  "id": "2adc9246-fd45-4125-b2b0-2d8b6c3c6ea8",
+  "domain": "tax",
+  "startedAt": "2026-10-19T23:55:08.156Z",
+  "completedAt": "2026-10-19T23:56:33.841Z",
+  "status": "success",
+  "results": [
+   {
+    "source": "세법 법령(국가법령정보센터)",
+    "status": "success",
+    "checked": 53,
+    "added": 0,
+    "updated": 0,
+    "note": "확인 실패 3건: 국세기본법 시행령: fetch failed / 국세기본법: fetch failed / 국세기본법 시행규칙: fetch failed"
+   },
+   {
+    "source": "세법 고시·지침·통칙(행정규칙)",
+    "status": "success",
+    "checked": 26,
+    "added": 0,
+    "updated": 0,
+    "note": "미확인 1건: 기본통칙: 검색 결과 없음"
+   },
+   {
+    "source": "세법 법제처 법령해석",
+    "status": "success",
+    "checked": 122,
+    "added": 0,
+    "updated": 0,
+    "note": "최신순 122건 확인"
+   },
+   {
+    "source": "세법 국세청 질의회신",
+    "status": "success",
+    "checked": 600,
+    "added": 1,
+    "updated": 0,
+    "note": "최신순 600건 확인 · 목록만 등록 1건 · 본문은 API 미제공(목록·원문 링크만)"
+   },
+   {
+    "source": "세법 기획재정부 법령해석",
+    "status": "success",
+    "checked": 300,
+    "added": 1,
+    "updated": 0,
+    "note": "최신순 300건 확인 · 목록만 등록 1건 · 본문은 API 미제공(목록·원문 링크만)"
+   },
+   {
+    "source": "세법 조세심판원 결정",
+    "status": "success",
+    "checked": 600,
+    "added": 0,
+    "updated": 0,
+    "note": "최신순 600건 확인"
+   },
+   {
+    "source": "세법 조세 판례",
+    "status": "success",
+    "checked": 391,
+    "added": 0,
+    "updated": 0,
+    "note": "최신순 391건 확인"
+   }
+  ]
+ },
+ {
   "id": "401c0a65-f910-4a2e-9796-4e5ee03c73ef",
   "domain": "subcon",
   "startedAt": "2026-10-19T14:24:17.014Z",
