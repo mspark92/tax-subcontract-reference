@@ -24,6 +24,7 @@ npm ci
 npm run check          # 타입 검사
 node build.mjs         # dist/ 생성
 npm run test:e2e       # 테스트용 가짜 자료로 화면 점검(가짜 자료는 배포되지 않음)
+node tests/smoke-real.mjs  # 실제 수집 자료로 주요 검색 점검(node build.mjs 후)
 LAW_API_OC=... node collector/collect.mjs [--domain tax|subcon] [--only laws|rules|sources]
 ```
 

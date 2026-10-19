@@ -84,6 +84,9 @@ const merge=(...objs)=>{const out={};for(const o of objs)for(const [k,v] of Obje
 const cut=(t,n)=>t.length>n?t.slice(0,n)+'\n…(원문이 길어 일부만 수록했습니다. 전체는 공식 출처에서 확인하세요.)':t;
 const TAX_WORDS=[['부가','부가가치세'],['종부','종합부동산세'],['종합부동산','종합부동산세'],['법인','법인세'],['양도','양도소득세'],['종소','종합소득세'],['원천','원천징수'],['소득','소득세'],['상속','상속세·증여세'],['증여','상속세·증여세'],['상증','상속세·증여세'],['재산세제','상속세·증여세'],['조특','조세특례'],['조세특례','조세특례'],['국조','국제조세'],['국제','국제조세'],['국기','국세기본법'],['기본법','국세기본법'],['징수','국세징수'],['취득','취득세'],['재산','재산세'],['등록','등록면허세'],['지방','지방세'],['개소','개별소비세'],['소비','개별소비세'],['환경','교통·에너지·환경세'],['관세','관세'],['인지','인지세'],['증권','증권거래세'],['교육','교육세'],['농특','농어촌특별세'],['주세','주세']];
 export function taxCategory(...texts){for(const t of texts){const s=String(t||'');for(const [k,v] of TAX_WORDS)if(s.includes(k))return v;}return '';}
+// 공정위 하도급 의결의 위반 유형(주문 문구 기준, 처음 일치하는 것)
+const FTC_TYPES=[[/기술자료/,'기술자료 요구·유용'],[/부당(한)? ?특약|특약을 설정/,'부당특약'],[/감액/,'부당 감액'],[/위탁(을)? ?취소|수령(을)? ?거부/,'위탁취소·수령거부'],[/반품/,'부당 반품'],[/보복/,'보복조치'],[/지급보증/,'지급보증'],[/결정|부당하게 낮은|대금(을)? ?결정/,'부당 대금결정'],[/서면|계약서|발급하지/,'서면 미발급'],[/지연이자|어음할인료|수수료|대금(을)? ?지급|미지급|지급하지/,'대금 지급'],[/조정|연동/,'대금 조정·연동'],[/경영(상)? ?정보/,'경영정보 요구'],[/탈법/,'탈법행위'],[/과태료|공시/,'공시·과태료']];
+export function ftcType(text){const t=String(text||'');for(const [re,v] of FTC_TYPES)if(re.test(t))return v;return '';}
 function decisionOf(text){const t=String(text||'');for(const [re,v] of [[/각하/,'각하'],[/기각/,'기각'],[/취소한다|취소하/,'취소'],[/경정/,'경정'],[/재조사/,'재조사'],[/과징금/,'과징금'],[/시정명령|시정조치|하여서는 아니 된다|행위를 다시/,'시정명령'],[/경고/,'경고'],[/고발/,'고발']])if(re.test(t))return v;return undefined;}
 const QA_WARNING='회신 당시 법령 기준입니다. 현재 법령과 대조해 확인하세요.';
 const CASE_WARNING='개별 사건의 판단입니다. 사실관계와 적용 법령 시점이 다르면 결론이 달라질 수 있습니다.';
@@ -108,7 +111,7 @@ function recordFromDetail(domain,src,id,listRow,detail){
   return {...base,agency:'조세심판원',category:cat('조세심판원 결정'),summary:(T('재결요지')||title).replace(/\s+/g,' ').slice(0,260),content:cut((sec('재결요지','주문','관련법령','참조결정')+'\n\n'+sec('이유')).trim(),CASE_TEXT),decision:decisionOf(T('주문')),tags:['조세심판원',...(세목?[세목]:[]),...(number?[number]:[])],warning:CASE_WARNING};
  }
  if(src.target==='ftc'){
-  return {...base,agency:'공정거래위원회',category:/이의신청/.test(title)?'이의신청 재결':pick(f,['문서유형'])||'의결서',summary:T('주문').replace(/\s+/g,' ').slice(0,260)||title,content:cut((sec('주문')+'\n\n'+sec('이유')).trim(),CASE_TEXT),decision:decisionOf(T('주문')),warning:CASE_WARNING};
+  return {...base,agency:'공정거래위원회',category:/이의신청/.test(title)?'이의신청 재결':ftcType(T('주문'))||'기타 하도급 의결',summary:T('주문').replace(/\s+/g,' ').slice(0,260)||title,content:cut((sec('주문')+'\n\n'+sec('이유')).trim(),CASE_TEXT),decision:decisionOf(T('주문')),warning:CASE_WARNING};
  }
  // 판례
  return {...base,agency:pick(f,['법원명'])||'법원',category:cat('판례'),summary:(T('판시사항')||T('판결요지')||title).replace(/\s+/g,' ').slice(0,260),content:cut((sec('판시사항','판결요지','참조조문','참조판례')+'\n\n'+sec('판례내용')).trim(),CASE_TEXT),decision:pick(f,['판결유형'])||undefined,warning:CASE_WARNING};

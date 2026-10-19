@@ -33,7 +33,7 @@ export const DOMAINS={
   // 행정규칙: 검색어 + 소관부처로 찾아 공식 명칭을 그대로 저장합니다.
   rules:[
    {group:'국세 공통',category:'국세 공통',query:'기본통칙',ministries:['국세청','기획재정부','재정경제부'],max:15,note:'국세청 기본통칙: 세법 조문의 해석 기준'},
-   {group:'국세 공통',category:'국세 공통',query:'사무처리규정',ministries:['국세청'],max:20,note:'국세청 세목별 사무처리 절차'},
+   {group:'국세 공통',category:'국세청 사무처리규정',query:'사무처리규정',ministries:['국세청'],max:40,exclude:['감정사무','정보화센터','통계사무','민원사무','상담센터','법령사무'],note:'국세청 세목별 사무처리 절차(내부 업무 기준)'},
   ],
   sources:[
    {id:'expc',kind:'qa',name:'법제처 법령해석',target:'expc',queries:['소득세','법인세','부가가치세','상속세','증여세','국세기본법','조세특례제한법','지방세','종합부동산세','관세'],limit:300,keep:600},
@@ -63,9 +63,8 @@ export const DOMAINS={
   ],
   sources:[
    {id:'expc',kind:'qa',name:'법제처 법령해석',target:'expc',queries:['하도급','수급사업자','상생협력','건설산업기본법'],limit:200,keep:400},
-   {id:'ftcqa',kind:'qa',name:'공정거래위원회 법령해석',target:'ftcCgmExpc',queries:['하도급'],limit:200,keep:400},
    {id:'molitqa',kind:'qa',name:'국토교통부 법령해석',target:'molitCgmExpc',queries:['하도급'],limit:200,keep:400},
-   {id:'ftc',kind:'case',name:'공정거래위원회 의결',target:'ftc',queries:['하도급','수급사업자'],limit:500,keep:1000},
+   {id:'ftc',kind:'case',name:'공정거래위원회 의결',target:'ftc',queries:['불공정하도급','하도급'],limit:600,keep:1200},
    {id:'prec',kind:'case',name:'하도급 판례',target:'prec',queries:['하도급대금','수급사업자','하도급거래'],limit:200,keep:400,listOnly:false},
   ],
  },

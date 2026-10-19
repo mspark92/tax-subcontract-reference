@@ -3,7 +3,7 @@ export type LawSection={id:string;title:string;start:number;end:number;kind:'art
 export type RecordItem={id:string;domain:string;kind:Kind;title:string;agency:string;date:string;url:string;attachment?:string;category:string;summary:string;content:string;tags:string[];
  /** 사례: 사건번호·결정유형 */caseNumber?:string;decision?:string;
  question?:string;answer?:string;reference?:string;
- lawSections?:LawSection[];hasBody?:boolean;lawVersion?:string;effectiveDate?:string;promulgationDate?:string;collectedAt?:string;sourceSnapshotUrl?:string;sourceHash?:string;lawOrder?:number;application?:string;lawGroup?:string;lawLevel?:string;lawTarget?:'law'|'admrul';articleCount?:number;annexCount?:number;lastCheckedAt?:string;lastError?:string;revisionType?:string;source?:string;guide?:Guide;warning?:string;edition?:string;page?:number};
+ lawSections?:LawSection[];hasBody?:boolean;lawVersion?:string;effectiveDate?:string;promulgationDate?:string;collectedAt?:string;sourceSnapshotUrl?:string;sourceHash?:string;lawOrder?:number;application?:string;lawGroup?:string;lawLevel?:string;lawTarget?:'law'|'admrul';articleCount?:number;annexCount?:number;lastCheckedAt?:string;lastError?:string;revisionType?:string;source?:string;noBody?:boolean;truncated?:boolean;guide?:Guide;warning?:string;edition?:string;page?:number};
 export type RunResult={source:string;status:'success'|'error'|'skipped';checked?:number;added?:number;updated?:number;note?:string;error?:string};
 export type Run={id:string;domain?:string;startedAt:string;completedAt:string;status:'success'|'partial'|'blocked';results:RunResult[]};
 export type Annex={title:string;no?:string;kind?:string;pdf?:string;file?:string};

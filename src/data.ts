@@ -15,3 +15,6 @@ const KEY='reference-prefs-v1';
 export type Prefs={favorites:string[];notes:Record<string,string>};
 export function readPrefs():Prefs{try{const v=JSON.parse(localStorage.getItem(KEY)||'');if(Array.isArray(v.favorites))return {favorites:v.favorites,notes:v.notes||{}};}catch{}return {favorites:[],notes:{}};}
 export function writePrefs(p:Prefs){try{localStorage.setItem(KEY,JSON.stringify(p));return true;}catch{return false;}}
+const textCache=new Map<string,Promise<RecordItem>>();
+/** 목록에서 잘린 본문을 전체로 채웁니다. */
+export function loadFull(r:RecordItem):Promise<RecordItem>{if(!r.truncated)return Promise.resolve(r);if(!textCache.has(r.id))textCache.set(r.id,json<Partial<RecordItem>|null>(`${r.domain}/texts/${r.id}.json`,null).then(t=>t?{...r,...t,truncated:false}:r));return textCache.get(r.id)!;}
