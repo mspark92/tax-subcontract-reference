@@ -1,1 +1,17 @@
-[]
+[
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세심판원 결정",
+  "kind": "case",
+  "added": 5,
+  "detectedAt": "2026-10-20T23:51:42.634Z",
+  "ids": [
+   "tax-tt-2102819",
+   "tax-tt-2098665",
+   "tax-tt-2098059",
+   "tax-tt-2096179",
+   "tax-tt-2095335"
+  ]
+ }
+]
