@@ -13,5 +13,58 @@
    "tax-tt-2096179",
    "tax-tt-2095335"
   ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "법제처 법령해석",
+  "kind": "qa",
+  "added": 1,
+  "detectedAt": "2026-10-21T23:53:26.445Z",
+  "ids": [
+   "tax-expc-328297"
+  ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세심판원 결정",
+  "kind": "case",
+  "added": 8,
+  "detectedAt": "2026-10-21T23:53:26.445Z",
+  "ids": [
+   "tax-tt-2102847",
+   "tax-tt-2102849",
+   "tax-tt-2102843",
+   "tax-tt-2102845",
+   "tax-tt-2102841",
+   "tax-tt-2102853",
+   "tax-tt-2102851",
+   "tax-tt-2102855"
+  ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세 판례",
+  "kind": "case",
+  "added": 2,
+  "detectedAt": "2026-10-21T23:53:26.445Z",
+  "ids": [
+   "tax-prec-613209",
+   "tax-prec-614211"
+  ]
+ },
+ {
+  "type": "source",
+  "domain": "subcon",
+  "source": "공정거래위원회 의결",
+  "kind": "case",
+  "added": 2,
+  "detectedAt": "2026-10-21T23:53:26.445Z",
+  "ids": [
+   "subcon-ftc-19477",
+   "subcon-ftc-19475"
+  ]
  }
 ]
