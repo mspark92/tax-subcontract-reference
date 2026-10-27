@@ -198,5 +198,23 @@
    "tax-tt-2103449",
    "tax-tt-2103411"
   ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세심판원 결정",
+  "kind": "case",
+  "added": 8,
+  "detectedAt": "2026-10-27T23:55:41.133Z",
+  "ids": [
+   "tax-tt-2103491",
+   "tax-tt-2103489",
+   "tax-tt-2103495",
+   "tax-tt-2103493",
+   "tax-tt-2103497",
+   "tax-tt-2103453",
+   "tax-tt-2103499",
+   "tax-tt-2103501"
+  ]
  }
 ]
