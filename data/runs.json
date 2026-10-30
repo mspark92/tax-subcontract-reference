@@ -1,5 +1,19 @@
 [
  {
+  "id": "f8baba2c-5b8f-4b5b-bf66-fd9881bcedb7",
+  "domain": "tax",
+  "startedAt": "2026-10-29T23:59:42.663Z",
+  "completedAt": "2026-10-30T00:00:55.403Z",
+  "status": "blocked",
+  "results": [
+   {
+    "source": "세법 국가법령정보센터",
+    "status": "error",
+    "error": "국가법령정보센터 접속 실패: fetch failed / UND_ERR_CONNECT_TIMEOUT"
+   }
+  ]
+ },
+ {
   "id": "eb4b1191-5446-47f8-8150-664893a2d6ae",
   "domain": "subcon",
   "startedAt": "2026-10-29T00:00:54.927Z",
