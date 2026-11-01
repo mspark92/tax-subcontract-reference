@@ -232,5 +232,32 @@
    "tax-tt-2103461",
    "tax-tt-2103463"
   ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세심판원 결정",
+  "kind": "case",
+  "added": 6,
+  "detectedAt": "2026-11-01T23:57:40.629Z",
+  "ids": [
+   "tax-tt-2103561",
+   "tax-tt-2103563",
+   "tax-tt-2103567",
+   "tax-tt-2103565",
+   "tax-tt-2103529",
+   "tax-tt-2103527"
+  ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세 판례",
+  "kind": "case",
+  "added": 1,
+  "detectedAt": "2026-11-01T23:57:40.629Z",
+  "ids": [
+   "tax-prec-625243"
+  ]
  }
 ]
