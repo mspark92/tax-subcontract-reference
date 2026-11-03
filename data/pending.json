@@ -259,5 +259,19 @@
   "ids": [
    "tax-prec-625243"
   ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세심판원 결정",
+  "kind": "case",
+  "added": 4,
+  "detectedAt": "2026-11-02T23:58:37.609Z",
+  "ids": [
+   "tax-tt-2103623",
+   "tax-tt-2103627",
+   "tax-tt-2103629",
+   "tax-tt-2103625"
+  ]
  }
 ]
