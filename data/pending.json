@@ -387,5 +387,22 @@
    "tax-prec-625437",
    "tax-prec-625519"
   ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세 판례",
+  "kind": "case",
+  "added": 7,
+  "detectedAt": "2026-11-10T00:00:34.402Z",
+  "ids": [
+   "tax-prec-625391",
+   "tax-prec-625369",
+   "tax-prec-625373",
+   "tax-prec-625371",
+   "tax-prec-625337",
+   "tax-prec-625333",
+   "tax-prec-625377"
+  ]
  }
 ]
