@@ -555,5 +555,56 @@
   "ids": [
    "subcon-ftc-19503"
   ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세심판원 결정",
+  "kind": "case",
+  "added": 69,
+  "detectedAt": "2026-11-17T05:10:20.379Z",
+  "ids": [
+   "tax-tt-2104291",
+   "tax-tt-2104289",
+   "tax-tt-2104295",
+   "tax-tt-2104299",
+   "tax-tt-2104297",
+   "tax-tt-2104293",
+   "tax-tt-2104247",
+   "tax-tt-2104245",
+   "tax-tt-2104307",
+   "tax-tt-2104243",
+   "tax-tt-2104301",
+   "tax-tt-2104241",
+   "tax-tt-2104303",
+   "tax-tt-2104305",
+   "tax-tt-2104309",
+   "tax-tt-2104313",
+   "tax-tt-2104311",
+   "tax-tt-2104315",
+   "tax-tt-2104317",
+   "tax-tt-2104249",
+   "tax-tt-2104319",
+   "tax-tt-2104361",
+   "tax-tt-2104363",
+   "tax-tt-2104375",
+   "tax-tt-2104365",
+   "tax-tt-2104373",
+   "tax-tt-2104251",
+   "tax-tt-2104369",
+   "tax-tt-2104371",
+   "tax-tt-2104367"
+  ]
+ },
+ {
+  "type": "source",
+  "domain": "subcon",
+  "source": "하도급 판례",
+  "kind": "case",
+  "added": 1,
+  "detectedAt": "2026-11-17T05:10:20.379Z",
+  "ids": [
+   "subcon-prec-613253"
+  ]
  }
 ]
