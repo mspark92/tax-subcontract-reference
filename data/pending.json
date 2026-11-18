@@ -606,5 +606,33 @@
   "ids": [
    "subcon-prec-613253"
   ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세심판원 결정",
+  "kind": "case",
+  "added": 18,
+  "detectedAt": "2026-11-18T04:38:04.426Z",
+  "ids": [
+   "tax-tt-2104435",
+   "tax-tt-2104437",
+   "tax-tt-2104441",
+   "tax-tt-2104439",
+   "tax-tt-2104433",
+   "tax-tt-2104443",
+   "tax-tt-2104339",
+   "tax-tt-2104341",
+   "tax-tt-2104343",
+   "tax-tt-2104337",
+   "tax-tt-2104335",
+   "tax-tt-2104445",
+   "tax-tt-2104449",
+   "tax-tt-2104447",
+   "tax-tt-2104345",
+   "tax-tt-2104347",
+   "tax-tt-2104349",
+   "tax-tt-2104459"
+  ]
  }
 ]
