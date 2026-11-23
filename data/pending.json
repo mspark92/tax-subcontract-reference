@@ -699,5 +699,31 @@
    "tax-tt-2104587",
    "tax-tt-2104593"
   ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세 판례",
+  "kind": "case",
+  "added": 16,
+  "detectedAt": "2026-11-23T03:53:22.021Z",
+  "ids": [
+   "tax-prec-625483",
+   "tax-prec-625799",
+   "tax-prec-625819",
+   "tax-prec-625735",
+   "tax-prec-625701",
+   "tax-prec-625469",
+   "tax-prec-625697",
+   "tax-prec-625457",
+   "tax-prec-625833",
+   "tax-prec-625791",
+   "tax-prec-625723",
+   "tax-prec-625781",
+   "tax-prec-625729",
+   "tax-prec-625731",
+   "tax-prec-625737",
+   "tax-prec-625715"
+  ]
  }
 ]
