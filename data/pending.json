@@ -765,5 +765,40 @@
    "tax-tt-2104697",
    "tax-tt-2104767"
   ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세심판원 결정",
+  "kind": "case",
+  "added": 12,
+  "detectedAt": "2026-11-25T05:35:05.148Z",
+  "ids": [
+   "tax-tt-2104785",
+   "tax-tt-2104787",
+   "tax-tt-2104745",
+   "tax-tt-2104749",
+   "tax-tt-2104747",
+   "tax-tt-2104751",
+   "tax-tt-2104789",
+   "tax-tt-2104753",
+   "tax-tt-2104793",
+   "tax-tt-2104755",
+   "tax-tt-2104795",
+   "tax-tt-2104757"
+  ]
+ },
+ {
+  "type": "source",
+  "domain": "tax",
+  "source": "조세 판례",
+  "kind": "case",
+  "added": 3,
+  "detectedAt": "2026-11-25T05:35:05.148Z",
+  "ids": [
+   "tax-prec-625915",
+   "tax-prec-625931",
+   "tax-prec-625675"
+  ]
  }
 ]
